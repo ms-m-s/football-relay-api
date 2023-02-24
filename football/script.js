@@ -14,16 +14,16 @@ const requestOptions = {
 };
 
 const url = "https://v3.football.api-sports.io";
-const endpoint1 = "/leagues/seasons";
-const endpoint2 = "/leagues/:leagueName/:country";
+const endpoint1 = "/leagues";
+const endpoint2 = "/leagues/:leagueId";
 const endpoint3 = "/standings/:leagueId/:season";
 
 async function loadData(endpoint) {
     try {
         return (await fetch(url + endpoint, requestOptions)).json();
-    } catch (err) {
+    } catch (error) {
         return {
-            Error: err.stack
+            Error: error.stack
         };
     }
 }
@@ -40,9 +40,8 @@ router.get(endpoint1, async (req, res) => {
 });
 
 router.get(endpoint2, async (req, res) => {
-    const name = req.params.leagueName;
-    const country = req.params.country;
-    const data = await loadData(`/leagues?name=${name}&country=${country}`);
+    const leagueId = req.params.leagueId;
+    const data = await loadData(`/leagues?id=${leagueId}`);
     res.json(data);
 });
 
