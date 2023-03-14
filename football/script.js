@@ -1,5 +1,7 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const apicache = require("apicache");
+const cache = apicache.middleware;
 const router = express.Router();
 
 var myHeaders = {
@@ -34,18 +36,18 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get(endpoint1, async (req, res) => {
+router.get(endpoint1, cache(30000), async (req, res) => {
     const data = await loadData(endpoint1);
     res.json(data);
 });
 
-router.get(endpoint2, async (req, res) => {
+router.get(endpoint2, cache("1 minute"), async (req, res) => {
     const leagueId = req.params.leagueId;
     const data = await loadData(`/leagues?id=${leagueId}`);
     res.json(data);
 });
 
-router.get(endpoint3, async (req, res) => {
+router.get(endpoint3, cache("2 minutes"), async (req, res) => {
     const id = req.params.leagueId;
     const season = req.params.season;
     const data = await loadData(`/standings?league=${id}&season=${season}`);
